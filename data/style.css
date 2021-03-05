@@ -1,0 +1,126 @@
+/* global */
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+p {
+    margin: 0 0 5px 0px;
+}
+.tcenter {
+  text-align: center;
+}
+.ib {
+  display: inline-block;
+}
+
+.w-100 {
+  width: 100%;
+}
+/* end global */
+
+.page_display {
+  background-color:#0069d8;
+  color: #FFFFFF;
+}
+.mode_selector_wrapper {
+  display: inline-block;
+}
+.mode_selector {
+    padding: 20px;
+    margin: 5px;
+    color: #0069d8;
+    background-color: #FFF;
+    border: 1px solid #FFFFFF;
+    cursor: pointer;
+}
+
+
+.mode_selector.active,
+.mode_selector:hover {
+    background-color: #0069d8;
+    color:#FFFFFF;
+}
+
+.page_display .listing_container_wrapper {
+  margin: 50px auto;
+}
+
+.page_display .customControlObj,
+.page_display .ledObj
+{
+  background: #FFFFFF;
+  color: #253858;
+  border:1px solid #FFFFFF;
+  margin:10px;
+  border-radius: 5px;
+  padding: 10px;  
+}
+.page_display .customControlObj .ledObj_inner,
+.page_display .ledObj .ledObj_inner
+{
+  position: relative;
+}
+
+.page_display .customControlObj .name,
+.page_display .ledObj .name
+{
+  font-size:18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+.page_display .customControlObj .color,
+.page_display .ledObj .color
+{
+  position: relative;
+  height: 100px;
+  width: 100px;
+  border: 1px dashed black;  
+}
+.page_display .customControlObj .color .color_viewer,
+.page_display .ledObj .color .color_viewer
+{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.page_display .customControlObj .color_selector,
+.page_display .ledObj .color_selector
+{
+  display: none;
+}
+
+.slider_selector_container {
+  width: 100%;
+  margin: 20px 0px;
+}
+.slider_selector {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 15px;
+  border-radius: 5px;
+  background: #fff;
+  outline: none;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  margin: 15px 0;
+}
+.slider_selector::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #fff;
+  border: 5px solid #0043b2;
+  cursor: pointer;
+}
+.slider_selector::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #fff;
+  border: 5px solid #0043b2;
+  cursor: pointer;
+}
+
+

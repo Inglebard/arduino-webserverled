@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>LEDs Controller</title>
+	
+	<link rel="stylesheet" href="style.css">
+	
+	<script src="jquery-3.6.0.min.js"></script>
+	<script>
+	var ledNumber = %LED_NUMBER% ;
+	var ledObjs = {%LED_ARRAY%};
+	var init_delay_value = %DELAY_VALUE% ;
+	var init_brightness_value = %BRIGHTNESS_VALUE% ;
+	var init_mode_value = "%MODE_VALUE%" ;
+	</script>
+	<script src="script.js"></script>
+
+</head>
+
+<body class="page_display">
+	<div class="main_content">
+		<div class="page_title"><h1 class="tcenter">LED Controller</h1></div>
+		
+		<div class="led_modes">
+			<h2>LEDs Parameters</h2>
+			<div class="led_parameters">
+				<div class="slider_selector_container">
+					Brightness : 
+				  <input type="range" min="1" max="255" value="255" class="slider_selector brightness_selector" id="brightness_selector">
+				</div>
+				
+				<div class="slider_selector_container">
+					Delay : 
+				  <input type="range" min="1" max="200" value="20" class="slider_selector delay_selector" id="delay_selector">
+				</div>
+			</div>
+		</div>
+		
+		<div class="led_modes">
+			<h2>LEDs Modes</h2>
+			<div class="led_modes">
+				<div class="mode_selector_wrapper">
+					<button class="mode_selector" data-real_value="STANDARD">Standard</button>
+				</div>
+				<div class="mode_selector_wrapper">
+					<button class="mode_selector" data-real_value="RAINBOW">Rainbow</button>
+				</div>
+				<div class="mode_selector_wrapper">
+					<button class="mode_selector" data-real_value="FADE">Fade</button>
+				</div>
+				<div class="mode_selector_wrapper">
+					<button class="mode_selector" data-real_value="FADE_SEQUENTIAL">Fade Sequential</button>
+				</div>
+				<div class="mode_selector_wrapper">
+					<button class="mode_selector" data-real_value="REVERSE_FADE_SEQUENTIAL">Reverse Fade Sequential</button>
+				</div>
+				<div class="mode_selector_wrapper">
+					<button class="mode_selector" data-real_value="STROBE">Strobe</button>
+				</div>
+				<div class="mode_selector_wrapper">
+					<button class="mode_selector" data-real_value="STROBE_SEQUENTIAL">Strobe Sequential</button>
+				</div>
+				<div class="mode_selector_wrapper">
+					<button class="mode_selector" data-real_value="REVERSE_STROBE_SEQUENTIAL">Reverse Strobe Sequential</button>
+				</div>
+			</div>
+		</div>
+		
+		<div class="led_colors">
+			<h2>LEDs Colors</h2>
+			<div class="listing_container_wrapper">   
+				<div id="custom_control" class="listing_custom_control">
+				  <div class="ib customControlObj">
+				    <div class="customControlObj_inner">	
+				      <span class="ib name">All LEDs</span>
+				      <div>					
+				        <div class="ib color">	
+				          <div class="color_viewer">
+				          </div>						
+				          <input type="color" class="color_selector" id="all_led_color_selector">
+				        </div>
+				      </div>						
+				    </div>   
+				  </div>			
+				</div>
+				<!-- Javascript generated list -->
+				<div id="listing_leds" class="listing_leds">
+				</div>   
+			</div>
+		</div>
+	</div>
+
+</body></html>
