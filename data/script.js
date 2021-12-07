@@ -29,9 +29,26 @@ function sendModeData(mode)
 {
   $.ajax({
     url: "/modes/?mode="+mode
-  });
-  
+  });  
 }
+function sendTemplateData(template)
+{
+  $.ajax({
+    url: "/templates/?template="+template,
+	dataType: 'json',
+	success: function (ledObjs) {
+	  //console.log(ledObjs);
+	  for(ledObj_index in ledObjs )
+	  {
+		ledObj=ledObjs[ledObj_index];
+		$("#color_selector_"+ledObj_index).val("#"+rgb2hex(ledObj.r,ledObj.g,ledObj.b));
+   		$(".color_viewer_"+ledObj_index).css('backgroundColor', "#"+rgb2hex(ledObj.r,ledObj.g,ledObj.b));
+	  }
+	}
+  });  
+}
+
+sendTemplateData
 /*end ajax functions to match web server*/
 
 //build leds listing and event
@@ -111,6 +128,13 @@ function hexToRgb(hex){
 $(document).ready(function() {
   // individual led ui and event 
   refreshUi();
+
+  /* Template Selector */ 
+  $(".template_selector").click(function(e) {
+    e.preventDefault();
+    var template_value = $(this).data("template");
+    sendTemplateData(template_value);
+  });
   
   /* All leds ui and events */
   $(".listing_custom_control .color_selector").change(function() {
@@ -131,6 +155,7 @@ $(document).ready(function() {
   
   // init slider value
   $("#brightness_selector").val(init_brightness_value);
+  $("#direction_selector").val(init_direction_value);
   $("#delay_selector").val(init_delay_value);
   
   /* modes functions */
@@ -154,6 +179,11 @@ $(document).ready(function() {
     var brightness_value = $(this).val();
     sendParameterData("brightness",brightness_value)
   });
+  $("#direction_selector").change(function() {
+    var direction_value = $(this).val();
+    sendParameterData("direction",direction_value)
+  });
+
   $("#delay_selector").change(function() {
     var delay_value = $(this).val();
     sendParameterData("delay",delay_value)

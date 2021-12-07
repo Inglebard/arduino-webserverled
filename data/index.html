@@ -10,9 +10,10 @@
 	<script src="jquery-3.6.0.min.js"></script>
 	<script>
 	var ledNumber = %LED_NUMBER% ;
-	var ledObjs = {%LED_ARRAY%};
+	var ledObjs = %LEDS_OBJS%;
 	var init_delay_value = %DELAY_VALUE% ;
 	var init_brightness_value = %BRIGHTNESS_VALUE% ;
+	var init_direction_value = %DIRECTION_VALUE% ;
 	var init_mode_value = "%MODE_VALUE%" ;
 	</script>
 	<script src="script.js"></script>
@@ -35,6 +36,11 @@
 					Delay : 
 				  <input type="range" min="1" max="200" value="20" class="slider_selector delay_selector" id="delay_selector">
 				</div>
+				
+				<div class="slider_selector_container">
+					Direction : 
+				  <input type="range" min="0" max="1" value="0" class="slider_selector direction_selector" id="direction_selector">
+				</div>
 			</div>
 		</div>
 		
@@ -46,6 +52,9 @@
 				</div>
 				<div class="mode_selector_wrapper">
 					<button class="mode_selector" data-real_value="RAINBOW">Rainbow</button>
+				</div>
+				<div class="mode_selector_wrapper">
+					<button class="mode_selector" data-real_value="SLIDE">Slide</button>
 				</div>
 				<div class="mode_selector_wrapper">
 					<button class="mode_selector" data-real_value="FADE">Fade</button>
@@ -68,6 +77,86 @@
 			</div>
 		</div>
 		
+		<div class="led_colors_template">
+			<h2>LEDs Colors Template</h2>
+			<div class="listing_container_wrapper">   
+
+				<div id="custom_template_listing" class="listing_custom_template">
+
+				  <div class="ib customTemplateObj">
+				    <div class="customTemplateObj_inner">	
+				      <span class="ib name">Christmas Red/White</span>
+				      <div>					
+						<a class="template_selector" href="#" data-template="CHRISTMAS_RW">
+							<div class="ib color">	
+								<div class="color_viewer template_christmas_rw">
+								</div>						
+							</div>
+						</a>
+				      </div>						
+				    </div>   
+				  </div>	
+					
+				  <div class="ib customTemplateObj">
+				    <div class="customTemplateObj_inner">	
+				      <span class="ib name">Christmas Gold/White</span>
+				      <div>					
+						<a class="template_selector" href="#"  data-template="CHRISTMAS_GW">
+							<div class="ib color">	
+								<div class="color_viewer template_christmas_gw">
+								</div>						
+							</div>
+						</a>
+				      </div>						
+				    </div>   
+				  </div>	
+					
+				  <div class="ib customTemplateObj">
+				    <div class="customTemplateObj_inner">	
+				      <span class="ib name">White/Black</span>
+				      <div>					
+						<a class="template_selector" href="#"  data-template="WB">
+							<div class="ib color">	
+								<div class="color_viewer template_wb">
+								</div>						
+							</div>
+						</a>
+				      </div>						
+				    </div>   
+				  </div>
+					
+				  <div class="ib customTemplateObj">
+				    <div class="customTemplateObj_inner">	
+				      <span class="ib name">Random</span>
+				      <div>					
+						<a class="template_selector" href="#"  data-template="RANDOM">
+							<div class="ib color">	
+								<div class="color_viewer template_random">
+								</div>						
+							</div>
+						</a>
+				      </div>						
+				    </div>   
+				  </div>
+					
+				  <div class="ib customTemplateObj">
+				    <div class="customTemplateObj_inner">	
+				      <span class="ib name">Blue / White / Red</span>
+				      <div>					
+						<a class="template_selector" href="#"  data-template="BWR">
+							<div class="ib color">	
+								<div class="color_viewer template_bwr">
+								</div>						
+							</div>
+						</a>
+				      </div>						
+				    </div>   
+				  </div>	
+
+				</div>
+
+			</div>
+		</div>
 		<div class="led_colors">
 			<h2>LEDs Colors</h2>
 			<div class="listing_container_wrapper">   
