@@ -40,7 +40,12 @@ enum Led_Transition
   REVERSE_FADE_SEQUENTIAL,
   STROBE,
   STROBE_SEQUENTIAL,
-  REVERSE_STROBE_SEQUENTIAL
+  REVERSE_STROBE_SEQUENTIAL,
+  CUSTOM_1,
+  CUSTOM_2,
+  CUSTOM_3,
+  CUSTOM_4,
+  CUSTOM_5
 };
 enum Led_Direction
 {
@@ -136,6 +141,26 @@ String processor(const String &var)
     if (Current_Led_Transition == RAINBOW)
     {
       Current_Led_Transition_str = "RAINBOW";
+    }
+    if (Current_Led_Transition == CUSTOM_1)
+    {
+      Current_Led_Transition_str = "CUSTOM_1";
+    }
+    if (Current_Led_Transition == CUSTOM_2)
+    {
+      Current_Led_Transition_str = "CUSTOM_2";
+    }
+    if (Current_Led_Transition == CUSTOM_3)
+    {
+      Current_Led_Transition_str = "CUSTOM_3";
+    }
+    if (Current_Led_Transition == CUSTOM_4)
+    {
+      Current_Led_Transition_str = "CUSTOM_4";
+    }
+    if (Current_Led_Transition == CUSTOM_5)
+    {
+      Current_Led_Transition_str = "CUSTOM_5";
     }
     if (Current_Led_Transition == STANDARD)
     {
@@ -352,6 +377,26 @@ void setup()
       if(modestr == "RAINBOW")
       {
         Current_Led_Transition = RAINBOW;
+      }
+      if(modestr == "CUSTOM_1")
+      {
+        Current_Led_Transition = CUSTOM_1;
+      }
+      if(modestr == "CUSTOM_2")
+      {
+        Current_Led_Transition = CUSTOM_2;
+      }
+      if(modestr == "CUSTOM_3")
+      {
+        Current_Led_Transition = CUSTOM_3;
+      }
+      if(modestr == "CUSTOM_4")
+      {
+        Current_Led_Transition = CUSTOM_4;
+      }
+      if(modestr == "CUSTOM_5")
+      {
+        Current_Led_Transition = CUSTOM_5;
       }
       if(modestr == "STANDARD")
       {
@@ -657,6 +702,100 @@ void slide()
   delay(delay_value);
 }
 
+void custom_1()
+{
+  for (int i = 0; i < pixels.numPixels(); i++)
+  {
+    if ((i+loopPass)%2 == 0)
+    {
+      pixels.setPixelColor(i, 0, 0, 0);
+    }
+    else
+    {
+      pixels.setPixelColor(i, ledColorState[i].r, ledColorState[i].g, ledColorState[i].b);
+    }
+  }
+  pixels.show();
+  delay(delay_value);
+}
+
+void custom_2()
+{
+  for (int i = 0; i < pixels.numPixels(); i++)
+  {
+    int lastLed=loopPass%pixels.numPixels();
+    if (i < lastLed)
+    {
+      pixels.setPixelColor(i, 0, 0, 0);
+    }
+    else
+    {
+      pixels.setPixelColor(i, ledColorState[i].r, ledColorState[i].g, ledColorState[i].b);
+    }
+  }
+  pixels.show();
+  delay(delay_value);
+}
+
+void custom_3()
+{
+  for (int i = 0; i < pixels.numPixels(); i++)
+  {
+    int lastLed=loopPass%(pixels.numPixels()*2);
+    if(lastLed < pixels.numPixels())
+    {
+      if (i < lastLed)
+      {
+        pixels.setPixelColor(i, 0, 0, 0);
+      }
+      else
+      {
+        pixels.setPixelColor(i, ledColorState[i].r, ledColorState[i].g, ledColorState[i].b);
+      }
+    }
+    else
+    {
+      int newlastLed= pixels.numPixels() - (lastLed - pixels.numPixels());
+      if (i < newlastLed)
+      {
+        pixels.setPixelColor(i, 0, 0, 0);
+      }
+      else
+      {
+        pixels.setPixelColor(i, ledColorState[i].r, ledColorState[i].g, ledColorState[i].b);
+      }
+      
+    }
+  }
+  pixels.show();
+  delay(delay_value);
+}
+
+
+void custom_4()
+{
+  for (int i = 0; i < pixels.numPixels(); i++)
+  {    
+    float multiplicator= abs(sin((loopPass+i)*0.05));
+    pixels.setPixelColor(i, ledColorState[i].r*multiplicator, ledColorState[i].g*multiplicator, ledColorState[i].b*multiplicator);    
+  }
+  pixels.show();
+  delay(delay_value);
+}
+
+
+void custom_5()
+{
+  for (int i = 0; i < pixels.numPixels(); i++)
+  {        
+    int temp = ((i+loopPass) % 10) + 1;
+    float multiplicator= 1.f / temp;
+    pixels.setPixelColor(i, ledColorState[i].r*multiplicator, ledColorState[i].g*multiplicator, ledColorState[i].b*multiplicator);    
+  }
+  pixels.show();
+  delay(delay_value);
+}
+
 // main loop
 // everything is based on number of cycles
 void loop()
@@ -687,6 +826,21 @@ void loop()
     break;
   case RAINBOW:
     rainbow();
+    break;
+  case CUSTOM_1:
+    custom_1();
+    break;
+  case CUSTOM_2:
+    custom_2();
+    break;
+  case CUSTOM_3:
+    custom_3();
+    break;
+  case CUSTOM_4:
+    custom_4();
+    break;
+  case CUSTOM_5:
+    custom_5();
     break;
   case STANDARD:
   default:
