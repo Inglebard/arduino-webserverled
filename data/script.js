@@ -48,7 +48,6 @@ function sendTemplateData(template)
   });  
 }
 
-sendTemplateData
 /*end ajax functions to match web server*/
 
 //build leds listing and event

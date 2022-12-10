@@ -407,7 +407,7 @@ void setup()
 
   // AJAX change leds templates, return all leds values
   server.on("/templates/", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
+  {
                 
     AsyncWebParameter* p_template = nullptr;    
       
@@ -502,6 +502,39 @@ void setup()
           }
         }  
       }     
+      if(templatestr == "RAINBOW")
+      {
+        for(int i=0; i<NUMPIXELS; i++) {
+          uint32_t pixelHue = (i * 65536L / NUMPIXELS);
+          uint32_t pixelHueFinal = pixels.gamma32(pixels.ColorHSV(pixelHue, 255));
+          ledColorState[i].r=(uint8_t)(pixelHueFinal >> 16);
+          ledColorState[i].g=(uint8_t)(pixelHueFinal >> 8);
+          ledColorState[i].b=(uint8_t)pixelHueFinal;     
+        }        
+      }  
+      if(templatestr == "BWR2")
+      {
+         for(int i=0; i<NUMPIXELS; i++) {
+          if(i <= NUMPIXELS/3)
+          {
+            ledColorState[i].r=0;
+            ledColorState[i].g=0;
+            ledColorState[i].b=255;    
+          }
+          if(i > NUMPIXELS/3 && i < ((NUMPIXELS/3)*2))
+          {
+            ledColorState[i].r=255;
+            ledColorState[i].g=255;
+            ledColorState[i].b=255;     
+          }
+          if(i >= ((NUMPIXELS/3)*2) )
+          {
+            ledColorState[i].r=255;
+            ledColorState[i].g=0;
+            ledColorState[i].b=0;     
+          }
+        }  
+      }  
     }
 
     
@@ -706,7 +739,7 @@ void custom_1()
 {
   for (int i = 0; i < pixels.numPixels(); i++)
   {
-    if ((i+loopPass)%2 == 0)
+    if ((i + loopPass) % 2 == 0)
     {
       pixels.setPixelColor(i, 0, 0, 0);
     }
@@ -723,7 +756,7 @@ void custom_2()
 {
   for (int i = 0; i < pixels.numPixels(); i++)
   {
-    int lastLed=loopPass%pixels.numPixels();
+    int lastLed = loopPass % pixels.numPixels();
     if (i < lastLed)
     {
       pixels.setPixelColor(i, 0, 0, 0);
@@ -741,8 +774,8 @@ void custom_3()
 {
   for (int i = 0; i < pixels.numPixels(); i++)
   {
-    int lastLed=loopPass%(pixels.numPixels()*2);
-    if(lastLed < pixels.numPixels())
+    int lastLed = loopPass % (pixels.numPixels() * 2);
+    if (lastLed < pixels.numPixels())
     {
       if (i < lastLed)
       {
@@ -755,7 +788,7 @@ void custom_3()
     }
     else
     {
-      int newlastLed= pixels.numPixels() - (lastLed - pixels.numPixels());
+      int newlastLed = pixels.numPixels() - (lastLed - pixels.numPixels());
       if (i < newlastLed)
       {
         pixels.setPixelColor(i, 0, 0, 0);
@@ -764,33 +797,30 @@ void custom_3()
       {
         pixels.setPixelColor(i, ledColorState[i].r, ledColorState[i].g, ledColorState[i].b);
       }
-      
     }
   }
   pixels.show();
   delay(delay_value);
 }
 
-
 void custom_4()
 {
   for (int i = 0; i < pixels.numPixels(); i++)
-  {    
-    float multiplicator= abs(sin((loopPass+i)*0.05));
-    pixels.setPixelColor(i, ledColorState[i].r*multiplicator, ledColorState[i].g*multiplicator, ledColorState[i].b*multiplicator);    
+  {
+    float multiplicator = abs(sin((loopPass + i) * 0.05));
+    pixels.setPixelColor(i, ledColorState[i].r * multiplicator, ledColorState[i].g * multiplicator, ledColorState[i].b * multiplicator);
   }
   pixels.show();
   delay(delay_value);
 }
 
-
 void custom_5()
 {
   for (int i = 0; i < pixels.numPixels(); i++)
-  {        
-    int temp = ((i+loopPass) % 10) + 1;
-    float multiplicator= 1.f / temp;
-    pixels.setPixelColor(i, ledColorState[i].r*multiplicator, ledColorState[i].g*multiplicator, ledColorState[i].b*multiplicator);    
+  {
+    int temp = ((i + loopPass) % 10) + 1;
+    float multiplicator = 1.f / temp;
+    pixels.setPixelColor(i, ledColorState[i].r * multiplicator, ledColorState[i].g * multiplicator, ledColorState[i].b * multiplicator);
   }
   pixels.show();
   delay(delay_value);
