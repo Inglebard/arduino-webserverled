@@ -6,13 +6,13 @@
 //
 // and the following hardware features :
 //
-// SPIFFS
+// LittleFS
 // Wi-Fi
 
 #include <WiFi.h>
 #include <esp_wifi.h>
-#include "ESPAsyncWebServer.h"
-#include "SPIFFS.h"
+#include <ESPAsyncWebServer.h>
+#include "LittleFS.h"
 
 #include <ArduinoOTA.h>
 #include <Adafruit_NeoPixel.h>
@@ -41,6 +41,9 @@ enum Led_Transition
   STROBE,
   STROBE_SEQUENTIAL,
   REVERSE_STROBE_SEQUENTIAL,
+  PINGPONG,
+  PINGPONG2,
+  RANDOM_ONE,
   CUSTOM_1,
   CUSTOM_2,
   CUSTOM_3,
@@ -66,6 +69,8 @@ Led_Direction Current_Led_Direction = FORWARD;
 int loopPass = 0;
 int delay_value = 10;
 int brightness_value = 1;
+int pingpong2_rand=0;
+Led_Direction pingpong2_dir=FORWARD;
 
 void initLedsColorState()
 {
@@ -142,6 +147,18 @@ String processor(const String &var)
     {
       Current_Led_Transition_str = "RAINBOW";
     }
+    if (Current_Led_Transition == PINGPONG)
+    {
+      Current_Led_Transition_str = "PINGPONG";
+    }
+    if (Current_Led_Transition == PINGPONG2)
+    {
+      Current_Led_Transition_str = "PINGPONG2";
+    }
+    if (Current_Led_Transition == RANDOM_ONE)
+    {
+      Current_Led_Transition_str = "RANDOM_ONE";
+    }
     if (Current_Led_Transition == CUSTOM_1)
     {
       Current_Led_Transition_str = "CUSTOM_1";
@@ -182,10 +199,10 @@ void setup()
   pixels.begin();
   pixels.clear();
 
-  // Initialize SPIFFS
-  if (!SPIFFS.begin(true))
+  // Initialize LittleFS
+  if (!LittleFS.begin(true))
   {
-    Serial.println("An Error has occurred while mounting SPIFFS");
+    Serial.println("An Error has occurred while mounting LittleFS");
     return;
   }
 
@@ -241,23 +258,23 @@ void setup()
   Serial.println(WiFi.localIP());
 
   // static files
-  server.serveStatic("/style.css", SPIFFS, "/style.css");
-  server.serveStatic("/script.js", SPIFFS, "/script.js");
-  server.serveStatic("/jquery-3.6.0.min.js", SPIFFS, "/jquery-3.6.0.min.js");
+  server.serveStatic("/style.css", LittleFS, "/style.css");
+  server.serveStatic("/script.js", LittleFS, "/script.js");
+  server.serveStatic("/jquery-3.6.0.min.js", LittleFS, "/jquery-3.6.0.min.js");
 
   // main page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
             {
      Serial.println("Request : /");
-    request->send(SPIFFS, "/index.html", String(), false, processor); });
+    request->send(LittleFS, "/index.html", String(), false, processor); });
 
   // AJAX change specific led color
   server.on("/led/", HTTP_GET, [](AsyncWebServerRequest *request)
             {
-    AsyncWebParameter* p_id = nullptr;      
-    AsyncWebParameter* p_r = nullptr;         
-    AsyncWebParameter* p_g = nullptr;    
-    AsyncWebParameter* p_b = nullptr;   
+    const AsyncWebParameter* p_id = nullptr;      
+    const AsyncWebParameter* p_r = nullptr;         
+    const AsyncWebParameter* p_g = nullptr;    
+    const AsyncWebParameter* p_b = nullptr;   
       
     
     if(request->hasParam("id"))
@@ -282,9 +299,9 @@ void setup()
   server.on("/allleds/", HTTP_GET, [](AsyncWebServerRequest *request)
             {
         
-    AsyncWebParameter* p_r = nullptr;         
-    AsyncWebParameter* p_g = nullptr;    
-    AsyncWebParameter* p_b = nullptr;   
+    const AsyncWebParameter* p_r = nullptr;         
+    const AsyncWebParameter* p_g = nullptr;    
+    const AsyncWebParameter* p_b = nullptr;   
       
     if(request->hasParam("r"))
       p_r = request->getParam("r");
@@ -307,8 +324,8 @@ void setup()
   server.on("/parameters/", HTTP_GET, [](AsyncWebServerRequest *request)
             {
         
-    AsyncWebParameter* p_name = nullptr;         
-    AsyncWebParameter* p_value = nullptr;    
+    const AsyncWebParameter* p_name = nullptr;         
+    const AsyncWebParameter* p_value = nullptr;    
       
     if(request->hasParam("name") && request->hasParam("value")) 
     {
@@ -339,7 +356,7 @@ void setup()
   server.on("/modes/", HTTP_GET, [](AsyncWebServerRequest *request)
             {
                 
-    AsyncWebParameter* p_mode = nullptr;    
+    const AsyncWebParameter* p_mode = nullptr;    
       
     if(request->hasParam("mode")) 
     {
@@ -378,6 +395,18 @@ void setup()
       {
         Current_Led_Transition = RAINBOW;
       }
+      if(modestr == "PINGPONG")
+      {
+        Current_Led_Transition = PINGPONG;
+      }
+      if(modestr == "PINGPONG2")
+      {
+        Current_Led_Transition = PINGPONG2;
+      }
+      if(modestr == "RANDOM_ONE")
+      {
+        Current_Led_Transition = RANDOM_ONE;
+      }
       if(modestr == "CUSTOM_1")
       {
         Current_Led_Transition = CUSTOM_1;
@@ -409,7 +438,7 @@ void setup()
   server.on("/templates/", HTTP_GET, [](AsyncWebServerRequest *request)
   {
                 
-    AsyncWebParameter* p_template = nullptr;    
+    const AsyncWebParameter* p_template = nullptr;    
       
     if(request->hasParam("template")) 
     {
@@ -735,6 +764,92 @@ void slide()
   delay(delay_value);
 }
 
+void pingpong()
+{
+  int ledID = loopPass % (pixels.numPixels() *2);
+
+  if(ledID > pixels.numPixels())
+  {
+    ledID = pixels.numPixels() - (ledID-pixels.numPixels());
+  }
+
+  for (int i = 0; i < pixels.numPixels(); i++)
+  {
+    if (i == ledID)
+    {
+      pixels.setPixelColor(i, ledColorState[i].r, ledColorState[i].g, ledColorState[i].b);
+    }
+    else
+    {
+      pixels.setPixelColor(i, 0, 0, 0);
+    }
+  }
+  pixels.show();
+  delay(delay_value);
+}
+
+void pingpong2()
+{
+    if(pingpong2_rand<=0)
+    {
+      pingpong2_rand=random(1,pixels.numPixels());
+      int dirrand=random(0,2);
+      if(dirrand==0)
+      {
+        pingpong2_dir=FORWARD;  
+      }
+      else
+      {
+        pingpong2_dir=BACKWARD; 
+      }
+    }
+    else
+    {
+      pingpong2_rand--;
+    }
+
+
+  int ledID = loopPass % (pixels.numPixels() *2);
+
+  if(ledID > pixels.numPixels())
+  {
+    ledID = pixels.numPixels() - (ledID-pixels.numPixels());
+  }
+
+  for (int i = 0; i < pixels.numPixels(); i++)
+  {
+    if (i == ledID)
+    {
+      pixels.setPixelColor(i, ledColorState[i].r, ledColorState[i].g, ledColorState[i].b);
+    }
+    else
+    {
+      pixels.setPixelColor(i, 0, 0, 0);
+    }
+  }
+  pixels.show();
+  delay(delay_value);
+}
+
+void random_one()
+{
+  int ledID = random(pixels.numPixels());
+
+  for (int i = 0; i < pixels.numPixels(); i++)
+  {
+    if (i == ledID)
+    {
+      pixels.setPixelColor(i, ledColorState[i].r, ledColorState[i].g, ledColorState[i].b);
+    }
+    else
+    {
+      pixels.setPixelColor(i, 0, 0, 0);
+    }
+  }
+  pixels.show();
+  delay(delay_value);
+}
+
 void custom_1()
 {
   for (int i = 0; i < pixels.numPixels(); i++)
@@ -857,6 +972,15 @@ void loop()
   case RAINBOW:
     rainbow();
     break;
+  case PINGPONG:
+    pingpong();
+    break;
+  case PINGPONG2:
+    pingpong2();
+    break;
+  case RANDOM_ONE:
+    random_one();
+    break;
   case CUSTOM_1:
     custom_1();
     break;
@@ -877,12 +1001,27 @@ void loop()
     standard();
   }
 
-  if (Current_Led_Direction == FORWARD)
+  if(Current_Led_Transition == PINGPONG2)
   {
-    loopPass++;
+    if(pingpong2_dir==FORWARD)
+    {
+      loopPass++;   
+    }
+    else
+    {
+      loopPass--;
+    }
   }
   else
   {
-    loopPass--;
+    if (Current_Led_Direction == FORWARD)
+    {
+      loopPass++;
+    }
+    else
+    {
+      loopPass--;
+    }
+
   }
 }
